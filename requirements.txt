@@ -1,0 +1,7 @@
+fastapi
+uvicorn
+sqlalchemy
+asyncpg
+boto3
+temporalio
+python-dotenv
