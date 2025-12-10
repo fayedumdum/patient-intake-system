@@ -18,7 +18,7 @@ This project implements a full backend ingestion pipeline using:
 ### 1. Clone the Repository
 ```bash
 git clone <REPO_URL>
-cd project-root
+cd patient-intake-system
 ```
 
 ### 2. Rename sample.env to .env
