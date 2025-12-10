@@ -6,9 +6,12 @@ services:
     ports:
       - "8000:8000"
     depends_on:
-      - db
-      - temporal
-      - localstack
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+      localstack:
+        condition: service_started
     env_file: ".env"
     volumes:
       - ./:/app
@@ -19,9 +22,12 @@ services:
       context: .
       dockerfile: Dockerfile
     depends_on:
-      - db
-      - temporal
-      - localstack
+      db:
+        condition: service_healthy
+      temporal:
+        condition: service_healthy
+      localstack:
+        condition: service_started
     env_file: ".env"
     volumes:
       - ./:/app
@@ -52,6 +58,12 @@ services:
     depends_on:
       db:
         condition: service_healthy
+    healthcheck:
+      test: ["CMD-SHELL", "tctl --address temporal:7233 workflow list"]
+      interval: 5s
+      timeout: 5s
+      retries: 5
+      start_period: 10s # Give Temporal time to start up before checking
 
 
   localstack:
@@ -68,6 +80,9 @@ services:
       TEMPORAL_ADDRESS: temporal:7233
     ports:
       - "8080:8080"
+    depends_on:
+      temporal:
+        condition: service_healthy
 
 volumes:
   postgres_data:
