@@ -12,6 +12,7 @@ class Patient(Base):
 
     person = relationship("Person", back_populates="patient", uselist=False, primaryjoin="Patient.id == foreign(Person.id)")
     visits = relationship("Visit", back_populates="patient")
+    batch_patient = relationship("BatchPatient", back_populates="patient")
 
 class Person(Base):
     __tablename__ = "persons"
@@ -33,3 +34,24 @@ class Visit(Base):
     reason = Column(String)
 
     patient = relationship("Patient", back_populates="visits")
+
+
+class Batch(Base):
+    __tablename__ = "batch"
+
+    id = Column(Integer, primary_key=True)
+    filename = Column(String, unique=True, nullable=False)
+
+
+    batch_patient = relationship("BatchPatient", back_populates="batch")
+
+
+class BatchPatient(Base):
+    __tablename__ = "batch_patient"
+
+    id = Column(Integer, primary_key=True)
+    batch_id = Column(Integer, ForeignKey("batch.id"))
+    patient_id = Column(Integer, ForeignKey("patients.id"))
+
+    patient = relationship("Patient", back_populates="batch_patient")
+    batch = relationship("Batch", back_populates="batch_patient")

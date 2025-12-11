@@ -47,9 +47,11 @@ async def get_patients(
             stmt = stmt.filter(Person.last_name.ilike(f"%{last_name}%"))
 
     
+    total = select(func.count()).select_from(stmt.subquery())
     stmt = stmt.offset(skip).limit(limit)
 
-    total = await db_session.scalar(select(func.count(Person.id)))
+    # total = await db_session.scalar(select(func.count(Person.id)))
+    total = await db_session.scalar(total)
 
     patients_result = await db_session.execute(stmt)
     patients = patients_result.unique().scalars().all()
